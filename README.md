@@ -15,4 +15,6 @@ To run app:
 
 ## Behaviour
 
+Backend mocked with axios-mock-adapter
+
 Set value of Text Field to `ERROR` to receive error at submit

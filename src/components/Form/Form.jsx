@@ -2,7 +2,7 @@ import React, {useCallback, useState} from "react";
 import {STATIC_TEXTS} from "../../resources/staticTexts";
 import {LONG_TEXT_INPUT_ID, PASSWORD_INPUT_ID, TEXT_INPUT_ID, validate} from "../../utils/utils";
 import {submitForm} from "../../utils/api";
-import {FloatingToast, ROLES} from "../FloatingToast/FloatingToast";
+import {Toast, ROLES} from "../Toast/Toast";
 import {SubmitButton} from "../SubmitButton/SubmitButton";
 import {LabelledInput} from "../LabelledInput/LabelledInput";
 
@@ -18,7 +18,7 @@ const FIELDS = [
     {
         fieldName: LONG_TEXT_INPUT_ID, label: STATIC_TEXTS.LONG_TEXT_LABEL, type: "textarea", maxLength: 120
     }
-]
+];
 
 export const Form = () => {
     const [data, setData] = useState(INITIAL_STATE);
@@ -50,10 +50,10 @@ export const Form = () => {
     }, [data]);
 
     const validateSingleField = useCallback((event) => {
-        const {name, value} = event.target
+        const {name, value} = event.target;
         const error = validate(name, value);
         setErrors(errors => {
-            const filteredErrors = errors?.filter(fieldKey => errors.key !== fieldKey);
+            const filteredErrors = errors?.filter(error => error.key !== name);
             error && filteredErrors.push(error);
             return filteredErrors;
         });
@@ -68,13 +68,12 @@ export const Form = () => {
 
     const getError = useCallback((fieldName) => errors?.find(error => error.key === fieldName)?.message, [errors])
 
-    return <div className={"col-lg-6"}>
+    return <div className={"col-12 col-lg-6"}>
         <div className={"row"}>
             <h1>{STATIC_TEXTS.BASIC_FORM}</h1>
         </div>
         <form className={"row g-3"} onSubmit={handleSubmit}>
-            {FIELDS.map(field => {
-                return <LabelledInput
+            {FIELDS.map(field => <LabelledInput
                     label={field.label}
                     value={data[field.fieldName]}
                     fieldName={field.fieldName}
@@ -82,10 +81,10 @@ export const Form = () => {
                     error={getError(field.fieldName)}
                     type={field.type}
                     onChange={handleChange}
-                    onBlur={validateSingleField}/>
-            })}
+                    onBlur={validateSingleField}/>)
+            }
             <SubmitButton disabled={errors?.length} loading={loading}/>
         </form>
-        {message && <FloatingToast {...message} onClose={() => setMessage(undefined)}/>}
+        {message && <Toast {...message} onClose={() => setMessage(undefined)}/>}
     </div>;
 };

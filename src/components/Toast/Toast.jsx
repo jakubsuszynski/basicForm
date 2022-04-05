@@ -5,7 +5,7 @@ export const ROLES = {
     ERROR: "ERROR"
 }
 
-export const FloatingToast = ({message, role, onClose}) => {
+export const Toast = ({message, role, onClose}) => {
     let roleClass = "";
     if (role === ROLES.SUCCESS) {
         roleClass = "alert-success";
