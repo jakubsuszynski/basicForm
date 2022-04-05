@@ -12,7 +12,7 @@ function App() {
             <main className="container d-flex align-items-center flex-column">
                 <Form/>
                 <div className={"col-6 mt-2 d-flex justify-content-end"}>
-                    <a href={REPO_URL} target={"_blank"}>{STATIC_TEXTS.DOCS}</a>
+                    <a href={REPO_URL} rel="noreferrer" target={"_blank"}>{STATIC_TEXTS.DOCS}</a>
                 </div>
             </main>
         </div>

@@ -13,6 +13,6 @@ To run app:
 `yarn start`
 
 
-##Behaviour
+## Behaviour
 
 Set value of Text Field to `ERROR` to receive error at submit
