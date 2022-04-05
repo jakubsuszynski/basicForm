@@ -13,7 +13,7 @@ export const FloatingToast = ({message, role, onClose}) => {
         roleClass = "alert-danger";
     }
     return <div className={"container d-flex justify-content-center fixed-bottom"}>
-        <div className={`col-md-6 alert ${roleClass} d-flex justify-content-between`} role={"alert"}>
+        <div className={`col-12 col-md-6 alert ${roleClass} d-flex justify-content-between`} role={"alert"}>
             {message}
             <button type={"button"} className={"btn-close"} aria-label={"Close"} onClick={onClose}/>
         </div>
