@@ -3,9 +3,22 @@ import {STATIC_TEXTS} from "../../resources/staticTexts";
 import {LONG_TEXT_INPUT_ID, PASSWORD_INPUT_ID, TEXT_INPUT_ID, validate} from "../../utils/utils";
 import {submitForm} from "../../utils/api";
 import {FloatingToast, ROLES} from "../FloatingToast/FloatingToast";
+import {SubmitButton} from "../SubmitButton/SubmitButton";
+import {LabelledInput} from "../LabelledInput/LabelledInput";
 
 const INITIAL_STATE = {[PASSWORD_INPUT_ID]: "", [TEXT_INPUT_ID]: "", [LONG_TEXT_INPUT_ID]: ""};
-const LONG_TEXT_MAX_LENGTH = 120;
+
+const FIELDS = [
+    {
+        fieldName: TEXT_INPUT_ID, label: STATIC_TEXTS.TEXT_LABEL, type: "text"
+    },
+    {
+        fieldName: PASSWORD_INPUT_ID, label: STATIC_TEXTS.PASSWORD_LABEL, type: "password"
+    },
+    {
+        fieldName: LONG_TEXT_INPUT_ID, label: STATIC_TEXTS.LONG_TEXT_LABEL, type: "textarea", maxLength: 120
+    }
+]
 
 export const Form = () => {
     const [data, setData] = useState(INITIAL_STATE);
@@ -37,9 +50,8 @@ export const Form = () => {
     }, [data]);
 
     const validateSingleField = useCallback((event) => {
-        const fieldKey = event.target.name;
-        const value = event.target.value;
-        const error = validate(fieldKey, value);
+        const {name, value} = event.target
+        const error = validate(name, value);
         setErrors(errors => {
             const filteredErrors = errors?.filter(fieldKey => errors.key !== fieldKey);
             error && filteredErrors.push(error);
@@ -61,73 +73,18 @@ export const Form = () => {
             <h1>{STATIC_TEXTS.BASIC_FORM}</h1>
         </div>
         <form className={"row g-3"} onSubmit={handleSubmit}>
-            <div>
-                <label
-                    htmlFor={TEXT_INPUT_ID}
-                    className={"form-label"}>
-                    {STATIC_TEXTS.TEXT_LABEL}
-                </label>
-                <input
-                    value={data[TEXT_INPUT_ID]}
+            {FIELDS.map(field => {
+                return <LabelledInput
+                    label={field.label}
+                    value={data[field.fieldName]}
+                    fieldName={field.fieldName}
+                    maxLength={field.maxLength}
+                    error={getError(field.fieldName)}
+                    type={field.type}
                     onChange={handleChange}
-                    onBlur={validateSingleField}
-                    type={"text"}
-                    name={TEXT_INPUT_ID}
-                    className={`form-control ${getError(TEXT_INPUT_ID) && "is-invalid"}`}
-                    id={TEXT_INPUT_ID}
-                />
-                <div className={"invalid-feedback"}>{getError(TEXT_INPUT_ID)}</div>
-            </div>
-            <div>
-                <label
-                    htmlFor={PASSWORD_INPUT_ID}
-                    className={"form-label"}>
-                    {STATIC_TEXTS.PASSWORD_LABEL}
-                </label>
-                <input
-                    value={data[PASSWORD_INPUT_ID]}
-                    onChange={handleChange}
-                    type={"password"}
-                    onBlur={validateSingleField}
-                    name={PASSWORD_INPUT_ID}
-                    className={`form-control ${getError(PASSWORD_INPUT_ID) && "is-invalid"}`}
-                    id={PASSWORD_INPUT_ID}
-                />
-                <div className={"invalid-feedback"}>{getError(PASSWORD_INPUT_ID)}</div>
-            </div>
-            <div>
-                <div className={"d-flex justify-content-between"}>
-                    <label htmlFor={LONG_TEXT_INPUT_ID}
-                           className={"form-label"}>{STATIC_TEXTS.LONG_TEXT_LABEL}</label>
-                    <div>{data[LONG_TEXT_INPUT_ID]?.length}/{LONG_TEXT_MAX_LENGTH}</div>
-                </div>
-                <textarea
-                    value={data[LONG_TEXT_INPUT_ID]}
-                    onChange={handleChange}
-                    onBlur={validateSingleField}
-                    className={`form-control ${getError(LONG_TEXT_INPUT_ID) && "is-invalid"}`}
-                    name={LONG_TEXT_INPUT_ID}
-                    maxLength={LONG_TEXT_MAX_LENGTH}
-                    id={LONG_TEXT_INPUT_ID}
-                />
-                <div className={"invalid-feedback"}>
-                    {getError(LONG_TEXT_INPUT_ID)}
-                </div>
-            </div>
-            <div>
-                <button
-                    disabled={errors?.length}
-                    type={"submit"}
-                    className={"btn btn-primary col-12 col-md-4"}>
-                    {loading ?
-                        <>
-                            <span className={"spinner-border spinner-border-sm me-2"} role={"status"}
-                                  aria-hidden={"true"}/>
-                            <span className={""}>{STATIC_TEXTS.LOADING}</span>
-                        </> : STATIC_TEXTS.SUBMIT_LABEL
-                    }
-                </button>
-            </div>
+                    onBlur={validateSingleField}/>
+            })}
+            <SubmitButton disabled={errors?.length} loading={loading}/>
         </form>
         {message && <FloatingToast {...message} onClose={() => setMessage(undefined)}/>}
     </div>;
